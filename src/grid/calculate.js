@@ -44,7 +44,8 @@ export default {
       maxPoint: {
         x: 0,
         y: height - scrollerWidth
-      }
+      },
+      tempTargetName: ''
     };
   },
   methods: {
@@ -160,12 +161,15 @@ export default {
                 }
                 if (targetName) {
                   if (targetName.indexOf(val) >= 0) {
+                    this.tempTargetName = targetName;
                     // if (Number(text) || text === 0 || text === '0' || text === '0.0') obj.pres = x.numDisplayed;
                     if (Number(text) || parseFloat(text) === 0) obj.pres = x.numDisplayed;
                   }
                 } else {
                   // if (Number(text) || text === 0 || text === '0' || text === '0.0') obj.pres = x.numDisplayed;
-                  if (Number(text) || parseFloat(text) === 0) obj.pres = x.numDisplayed;
+                  if (this.tempTargetName.indexOf(val) >= 0) {
+                    if (Number(text) || parseFloat(text) === 0) obj.pres = x.numDisplayed;
+                  }
                 }
               });
               if (this.dimensionCondition.length > 0) {

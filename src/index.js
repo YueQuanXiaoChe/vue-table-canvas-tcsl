@@ -4,10 +4,10 @@ import calculate from './grid/calculate';
 import scroller from './grid/scroller';
 import utils from './grid/utils';
 
-module.export = {
+export default {
   painted,
   events,
   calculate,
   scroller,
   utils
-};
+}
