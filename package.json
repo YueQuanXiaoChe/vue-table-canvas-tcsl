@@ -1,0 +1,22 @@
+{
+  "name": "vue-table-canvas-tcsl",
+  "version": "1.0.0",
+  "description": "天财商龙公司 -> 技术中心 -> 龙决策项目组 -> 一款用canvas实现的交叉表组件，同时支持PC端和APP端使用",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YueQuanXiaoChe/vue-table-canvas-tcsl.git"
+  },
+  "keywords": [
+    "vue-table-canvas-tcsl"
+  ],
+  "author": "YueQuanXiaoChe",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YueQuanXiaoChe/vue-table-canvas-tcsl/issues"
+  },
+  "homepage": "https://github.com/YueQuanXiaoChe/vue-table-canvas-tcsl#readme"
+}
