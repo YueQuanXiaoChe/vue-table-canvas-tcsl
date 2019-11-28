@@ -19,7 +19,7 @@ let tableColor = {
   },
   purpleNight: {
     bodyBGColor: '#272e42',
-    bodyColor: '#FEFEFE', // 背景的颜色
+    bodyColor: '#FEFEFE',
     headerColor: '#ffffff',
     textColor: '#FEFEFE',
     borderColor: '#10141b',
@@ -67,7 +67,6 @@ export default {
     };
   },
   methods: {
-    // 初始化 canvas
     initCanvas () {
       const canvas = this.$refs.canvas;
       let ctx = null;
@@ -79,7 +78,6 @@ export default {
       }
       ctx.font = this.normalFont;
 
-      // 调用 setbodyWidth、clearAllCells 清除上一次生成图表的数据
       this.setbodyWidth();
       this.clearAllCells();
       this.setAllCells(0, true);
@@ -90,35 +88,32 @@ export default {
         this.resetScrollBar(this.maxPoint, this.bodyWidth, this.bodyHeight, this.fixedWidth);
       }
     },
-    // 重新绘制
     rePainted () {
       let items = this.initDisplayItems();
       this.clearPainted();
       this.painted(items);
       return items;
     },
-    // 清空画布
     clearPainted () {
       this.ctx && this.ctx.clearRect(0, 0, this.width, this.height);
     },
-    // 绘制主驱动方法
     painted ({displayColumns, displayRows, displayCells, displayFixedCells}) {
       const ctx = this.ctx;
       if (!ctx) return;
-      ctx.fillStyle = tableColor[this.theme].headerColor; // text color
+      ctx.fillStyle = tableColor[this.theme].headerColor;
       ctx.textAlign = 'center';
       ctx.lineWidth = this.lineWidth;
       ctx.strokeStyle = tableColor[this.theme].borderColor;
       ctx.textBaseline = 'middle';
-      if (displayCells.length > 0) this.paintBGColor(ctx); // 数值部分整个背景的颜色
+      if (displayCells.length > 0) this.paintBGColor(ctx);
       if (this.platform === 'PC') {
-        this.paintStripeBGC(ctx, displayCells); // 间隔行的背景颜色
+        this.paintStripeBGC(ctx, displayCells);
       }
       this.paintBGC(ctx, displayCells);
-      if (displayCells.length > 0) this.paintLine(ctx, displayRows, displayColumns); // 画每列之间的分隔线
-      this.paintBody(ctx, displayCells); // 画单元格内的文字
+      if (displayCells.length > 0) this.paintLine(ctx, displayRows, displayColumns);
+      this.paintBody(ctx, displayCells);
       ctx.textAlign = 'center';
-      if (!this.oneOption.rowColSwap) this.paintHeader(ctx, displayColumns); // 画表格头部的信息
+      if (!this.oneOption.rowColSwap) this.paintHeader(ctx, displayColumns);
 
       if (this.platform === 'PC') {
         if (displayFixedCells.length > 0 && this.fillWidth === 0) {
@@ -126,7 +121,7 @@ export default {
         }
       }
 
-      this.painScroller(ctx, this.scrollerWidth); // 画滚动条
+      this.painScroller(ctx, this.scrollerWidth);
     },
     paintBGColor (ctx) {
       const {p, i, maxPoint, bodyHeight, originPoint} = this;
@@ -135,7 +130,7 @@ export default {
       ctx.fillRect(i(0), p(yy), i(maxPoint.x), p(bodyHeight));
     },
     paintLine (ctx, displayRows, displayColumns) {
-      const {p, i, maxPoint, rowHeight, serialWidth, bodyHeight, toolbarHeight, originPoint} = this;//eslint-disable-line
+      const {p, i, maxPoint, rowHeight, serialWidth, bodyHeight, toolbarHeight, originPoint} = this;
       ctx.beginPath();
       ctx.strokeStyle = tableColor[this.theme].borderColor;
       ctx.lineWidth = this.lineWidth;
@@ -147,7 +142,6 @@ export default {
           ctx.lineTo(p(column.x + column.width), i(bodyHeight + yy));
         }
       });
-      // 横线
       displayRows.forEach((item) => {
         ctx.moveTo(serialWidth, p(item.y + item.height + yy));
         ctx.lineTo(i(maxPoint.x), p(item.y + item.height + yy));
@@ -157,18 +151,15 @@ export default {
 
       ctx.stroke();
     },
-    // 绘制单元格的背景颜色
     paintCellBGColor (ctx, item, color = '#ffff00') {
       const {x, y, width, height} = item;
       ctx.fillStyle = color;
       ctx.fillRect(x, y, width, height);
     },
-    // 绘制数据
     paintBody (ctx, displayCells) {
       const {paintText, i, lineWidth, paintUnderline, originPoint} = this;
       ctx.font = this.normalFont;
       let yy = this.oneOption.rowColSwap ? -(originPoint.y + 1) : 0;
-      // for (const rows of displayCells) {
       for (let n = 0; n < displayCells.length; n++) {
         let rows = displayCells[n];
         for (const item of rows) {
@@ -208,7 +199,7 @@ export default {
                 ctx.moveTo(i(item.x + this.lineWidth), i(item.y + this.lineWidth + yy - 1));
                 ctx.lineTo(i(item.x + this.lineWidth), i((item.y + item.height + yy - 1)));
               } else {
-                ctx.strokeStyle = n % 2 ? tableColor[this.theme].bodyBGColor : tableColor[this.theme].headFillColor; // bug 109794 错误出在这里
+                ctx.strokeStyle = n % 2 ? tableColor[this.theme].bodyBGColor : tableColor[this.theme].headFillColor;
                 if (isInTotal) ctx.strokeStyle = tableColor[this.theme].TotleColor;
                 ctx.moveTo(i(item.x + this.lineWidth), i(item.y + this.lineWidth + yy));
                 ctx.lineTo(i(item.x + this.lineWidth), i((item.y + item.height + yy)));
@@ -220,16 +211,14 @@ export default {
                 item.y++;
                 item.width--;
                 item.height--;
-                this.paintCellBGColor(ctx, item, item.cellBgColor); // 绘制单元格背景颜色
+                this.paintCellBGColor(ctx, item, item.cellBgColor);
               }
-              // 设置文字颜色
               let tmpColor = tableColor[this.theme].bodyColor;
               if (item.cellFontColor && item.cellFontColor.length > 0 && rows[0].content !== '列总计' && rows[0].content !== '小计') {
                 tmpColor = item.cellFontColor;
               }
-              // 绘制文字
               ctx.beginPath();
-              ctx.fillStyle = tmpColor; // 这里修改交叉表标题下的文字和数值的颜色
+              ctx.fillStyle = tmpColor;
               if (item.isX && !(~item.key.indexOf('hangxiaoji') || item.key === 'totalLine')) {
                 ctx.textAlign = 'start';
                 paintText(ctx, i(item.x + 16 * this.dpr), i(16 * this.dpr + item.y + yy), item.paintText, this.dpr);
@@ -238,7 +227,6 @@ export default {
                 paintText(ctx, i(item.x + (item.width - 20 * this.dpr)), i(16 * this.dpr + item.y + yy), item.paintText, this.dpr);
               }
               ctx.stroke();
-              // 如果可以跳转，则绘制文字的下划线
               if (item.canJump) {
                 ctx.beginPath();
                 ctx.strokeStyle = tableColor[this.theme].headerColor;
@@ -282,11 +270,9 @@ export default {
       let yy = this.oneOption.rowColSwap ? -(originPoint.y + 1) : 0;
       ctx.beginPath();
       for (const rows of displayCells) {
-        // 行列转制后数值小计背景渲染
         if (this.oneOption.rowColSwap && rows[0].isZongJi) {
           for (let item of rows) {
             if (!item.fixed || this.fillWidth > 0) {
-              // if (this.oneOption.rowColSwap && item.content.indexOf('总计') === -1 && item.content !== 'dontPaintY_Swap') {
               if (item.content !== 'dontPaintX') {
                 if (this.platform === 'APP') {
                   if (item.x < 0) {
@@ -302,7 +288,6 @@ export default {
                   }
                 }
               }
-              // }
             }
           }
         }
@@ -347,31 +332,13 @@ export default {
       }
       ctx.stroke();
     },
-    // 绘制文字（多行）
     paintText (ctx, x, y, row, dpr) {
       for (let b = 0; b < row.length; b += 1) {
         let res = '';
         res = row[b];
-        // 行列转置后，调换’行总计‘和’l列总计‘的文字描述
-        // if (row[b] === '行总计' && this.oneOption.rowColSwap) {
-        //   res = '列总计';
-        //   // 维度有字段，数值没有字段
-        //   // if (this.dimensionCondition.length > 0 && this.indexCondition.length <= 0) {
-        //   //   res = '行总计';
-        //   // }
-        // } else if (row[b] === '列总计' && this.oneOption.rowColSwap) {
-        //   res = '行总计';
-        //   // 维度没有字段，数值有字段
-        //   // if (this.dimensionCondition.length <= 0 && this.indexCondition.length > 0) {
-        //   //   res = '列总计';
-        //   // }
-        // } else {
-        //   res = row[b];
-        // }
         ctx.fillText(res, x, y + (b * 18 * dpr));
       }
     },
-    // 绘制可下钻底线（多行）
     paintUnderline (ctx, dpr, item, x) {
       let {p, originPoint} = this;
       let yy = this.oneOption.rowColSwap ? -(originPoint.y + 1) : 0;
@@ -380,7 +347,6 @@ export default {
         ctx.lineTo(p(x + ctx.measureText(item.paintText[b]).width + 16 * dpr), p(item.y + 25 * dpr + yy) + (b * 18 * dpr));
       }
     },
-    // 绘制表头
     paintHeader (ctx, displayColumns) {
       const {width, paintHeadWord, toolbarHeight, originPoint, blodFont} = this;
       ctx.fillStyle = tableColor[this.theme].headFillColor;
@@ -398,7 +364,6 @@ export default {
       }
       ctx.stroke();
     },
-    // 绘制固定列
     paintFixedCells (ctx, displayFixedCells, displayColumns) {
       const {bodyHeight, rowHeight, maxPoint, paintText, p, i, allColumns, fixedColumns, toolbarHeight, Hierarchy, paintHeadWord, blodFont, normalFont, lineWidth, paintUnderline} = this;
       const lastDisplayColumn = displayColumns[displayColumns.length - 1];
@@ -483,17 +448,16 @@ export default {
               }
             }
             ctx.stroke();
-            if (item.cellBgColor && item.cellBgColor.length > 0 && displayFixedCells[0][index].content !== '列总计' && displayFixedCells[0][index].content !== '小计') { // && displayFixedCells[0][index].canJump === undefined) {
+            if (item.cellBgColor && item.cellBgColor.length > 0 && displayFixedCells[0][index].content !== '列总计' && displayFixedCells[0][index].content !== '小计') {
               item.x++;
               item.y++;
               item.width--;
               item.height--;
-              this.paintCellBGColor(ctx, item, item.cellBgColor); // 绘制单元格背景颜色
+              this.paintCellBGColor(ctx, item, item.cellBgColor);
             }
             ctx.beginPath();
-            // 设置文字颜色
             let tmpColor = tableColor[this.theme].bodyColor;
-            if (item.cellFontColor && item.cellFontColor.length > 0 && displayFixedCells[0][index].content !== '列总计' && displayFixedCells[0][index].content !== '小计') { // && displayFixedCells[0][index].canJump === undefined) {
+            if (item.cellFontColor && item.cellFontColor.length > 0 && displayFixedCells[0][index].content !== '列总计' && displayFixedCells[0][index].content !== '小计') {
               tmpColor = item.cellFontColor;
             }
             ctx.fillStyle = tmpColor;
@@ -543,7 +507,6 @@ export default {
       ctx.lineTo(p(this.fixedColumnsWidth), p(this.bodyHeight));
       ctx.stroke();
     },
-    // 绘制滚动条
     painScroller (ctx, height) {
       let lineWidth = this.lineWidth;
       const p = this.p;
@@ -560,7 +523,6 @@ export default {
       ctx.fillRect(p((this.width - height) + lineWidth), p((this.height - height) + lineWidth), height - lineWidth, height - lineWidth);
       ctx.stroke();
     },
-    // 绘制头部分层
     paintHeadWord (col, ctx) {
       const {paintHeadWord, rowHeight, p, stringsIcon, naturalOrder, DescendingIcon, unfixedIcon, fixedIcon, dpr} = this;
       let sortIcon = naturalOrder;
@@ -627,7 +589,6 @@ export default {
         }
       }
     },
-    // 随机数取 小数 .5 (解决canvas绘制1px线出现模糊)
     p (value) {
       const temp = `${value}`;
       if (temp && temp.indexOf && temp.indexOf('.') === -1) {
@@ -635,7 +596,6 @@ export default {
       }
       return value;
     },
-    // 小数取整
     i (value) {
       return Math.round(value);
     }

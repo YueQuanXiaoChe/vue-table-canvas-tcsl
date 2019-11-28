@@ -1,7 +1,7 @@
 {
   "name": "vue-table-canvas-tcsl",
   "description": "天财商龙公司 -> 技术中心 -> 龙决策项目组 -> 一款用canvas实现的交叉表组件，同时支持PC端和APP端使用",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "YueQuanXiaoChe",
   "license": "MIT",
   "private": false,

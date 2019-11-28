@@ -49,18 +49,15 @@ export default {
     };
   },
   methods: {
-    // 计算每列的宽度
     calculationWidth (arr) {
       let {ctx} = this;
       return arr.map((v) => {
         if (typeof v === 'string') {
-          // measureText 在画布上输出文本之前，检查字体的宽度
           return this.i((ctx.measureText(v).width)) + (100 * this.dpr);
         }
         return 100 * this.dpr;
       }).sort((a, b) => b - a)[0] || 100;
     },
-    // 计算 body 的宽度
     setbodyWidth () {
       if (!this.$refs.grid) return;
 
@@ -84,7 +81,6 @@ export default {
         this.bodyWidth = this.width - this.scrollerWidth;
       }
     },
-    // 清除所有单元格数据
     clearAllCells () {
       this.data = [];
       this.allCells = [];
@@ -93,7 +89,6 @@ export default {
       this.allFixedCells = [];
       this.fixedColumns = [];
     },
-    // 获取所有单元格
     getAllCellsPC (value, columns, startIndex) {
       this.fixedWidth = 0;
       const {rowHeight, ctx, getTextLine, allRows, allCells, allColumns, fixedColumns} = this;
@@ -112,7 +107,6 @@ export default {
         const cellTemp = [];
         let startX = 0;
         let rainbow = columns.findIndex((e) => e.key === value[i].stripe);
-        // for (const column of columns) {
         columns.forEach((column, index) => {
           if (rowIndex === 0) {
             if (column.fixed) {
@@ -151,7 +145,6 @@ export default {
               textLine = getTextLine(ctx, text, column.width, column);
             } else {
               let obj = {isX: column.isX, pres: null};
-              // 设置数值显示的格式化信息
               this.indexCondition.forEach((x) => {
                 let val;
                 if (x.fieldGroup === 6 && !x.aggregatorFlag) {
@@ -162,11 +155,9 @@ export default {
                 if (targetName) {
                   if (targetName.indexOf(val) >= 0) {
                     this.tempTargetName = targetName;
-                    // if (Number(text) || text === 0 || text === '0' || text === '0.0') obj.pres = x.numDisplayed;
                     if (Number(text) || parseFloat(text) === 0) obj.pres = x.numDisplayed;
                   }
                 } else {
-                  // if (Number(text) || text === 0 || text === '0' || text === '0.0') obj.pres = x.numDisplayed;
                   if (this.tempTargetName.indexOf(val) >= 0) {
                     if (Number(text) || parseFloat(text) === 0) obj.pres = x.numDisplayed;
                   }
@@ -186,7 +177,6 @@ export default {
                   let isInIndex = true;
                   for (let ind of this.indexCondition) {
                     if (columns[0].title.indexOf(ind.aliasName) === -1 && columns[0].title.indexOf(ind.fieldDescription) === -1) {
-                    // if (ind.aliasName !== column.title && ind.fieldDescription !== column.title) {
                       isInIndex = false;
                       break;
                     }
@@ -273,7 +263,6 @@ export default {
       }
       this.fixedColumnsWidth = this.getHeaderTree(JSON.parse(JSON.stringify(fixedColumns))).reduce((p, e) => p + e.width, 0);
     },
-    // 获取所有单元格
     getAllCellsAPP (value, columns, startIndex) {
       this.fixedWidth = 0;
       const {rowHeight, ctx, getTextLine, allRows, allCells, allColumns} = this;
@@ -290,7 +279,6 @@ export default {
         let maxHeight = rowHeight;
         let cellIndex = 0;
         const cellTemp = [];
-        // for (const column of columns) {
         columns.forEach((column, index) => {
           if (rowIndex === 0) {
             allColumns.push({
@@ -309,7 +297,6 @@ export default {
               textLine = getTextLine(ctx, text, column.width, column);
             } else {
               let obj = {isX: column.isX, pres: null};
-              // 设置数值显示的格式化信息
               this.indexCondition.forEach((x) => {
                 let val;
                 if (x.fieldGroup === 6 && !x.aggregatorFlag) {
@@ -319,11 +306,9 @@ export default {
                 }
                 if (targetName) {
                   if (targetName.indexOf(val) >= 0) {
-                    // if (Number(text) || text === 0 || text === '0' || text === '0.0') obj.pres = x.numDisplayed;
                     if (Number(text) || parseFloat(text) === 0) obj.pres = x.numDisplayed;
                   }
                 } else {
-                  // if (Number(text) || text === 0 || text === '0' || text === '0.0') obj.pres = x.numDisplayed;
                   if (Number(text) || parseFloat(text) === 0) obj.pres = x.numDisplayed;
                 }
               });
@@ -341,7 +326,6 @@ export default {
                   let isInIndex = true;
                   for (let ind of this.indexCondition) {
                     if (columns[0].title.indexOf(ind.aliasName) === -1 && columns[0].title.indexOf(ind.fieldDescription) === -1) {
-                    // if (ind.aliasName !== column.title && ind.fieldDescription !== column.title) {
                       isInIndex = false;
                       break;
                     }
@@ -422,7 +406,6 @@ export default {
           this.bodyWidth += this.calculationWidth(column.compare_names);
           columnCount += 1;
         }
-        // 填充宽度
         this.fillWidth = 0;
         if (this.bodyWidth < this.width - this.scrollerWidth) {
           this.fillWidth = columnCount ? (this.width - this.bodyWidth - this.scrollerWidth) / columnCount : 0;
@@ -434,7 +417,6 @@ export default {
         window.requestAnimationFrame(this.rePainted);
       }
     },
-    // 计算 body 的高度
     setBodyHeight (allRows, {y}) {
       this.bodyHeight = y + this.toolbarHeight;
       for (const row of allRows) {
@@ -445,7 +427,6 @@ export default {
       this.maxPoint.x = width - scrollerWidth;
       this.maxPoint.y = height - scrollerWidth;
     },
-    // 设置所有单元格
     setAllCells (startIndex, first = false) {
       let loadNum = 40;
       let maxCeLL = this.allData[0] ? Object.keys(this.allData[0]).length : 0;
@@ -477,9 +458,6 @@ export default {
       this.resetScrollBar(this.maxPoint, this.bodyWidth, this.bodyHeight, this.fixedWidth);
     },
     getHeaderTree (arr, option = {fixed: true}) {
-      // 这个方法优化的地方是把递归放入内层   把现有递归里面的判断提取出来
-      // 这点地方看的懂看不懂就看缘分吧    也别强行琢磨   我也不太懂
-      // 反正就是交叉表表头部分
       if (!this.Hierarchy) {
         return arr.map((v) => {
           v.i = this.Hierarchy;
@@ -551,7 +529,6 @@ export default {
       });
       return [...headerTreeIsX, ...headerTree];
     },
-    // 初始化显示行列
     initDisplayItems () {
       const displayColumns = this.getDisplayColumns();
       const displayRows = this.getDisplayRows();
@@ -619,7 +596,7 @@ export default {
             cellBgColor: '',
             cellFontColor: '',
             isZongJi: allCells[row.rowIndex][0].isZongJi
-          });//eslint-disable-line
+          });
           if (cellClone.content === '小计' || cellClone.content === '列总计' || cellClone.content === 'dontPaintX' || cellClone.content === 'dontPaintY') {
             cellClone.canJump = false;
           }

@@ -23,14 +23,12 @@ export default {
     }
   },
   methods: {
-    // 预防事件
     preventEvent (event) {
       if (!this.refresh) {
         event.preventDefault();
         event.stopPropagation();
       }
     },
-    // 移除全局事件方法
     removeEvent () {
       if (this.platform === 'APP') {
         window.removeEventListener('touchstart', this.handleMousedown, false);
@@ -41,10 +39,8 @@ export default {
       }
       window.removeEventListener('resize', this.handleResize, false);
     },
-    // 注册事件
     initEvent () {
       window.addEventListener('resize', this.handleResize, false);
-      // this.$refs.canvas.addEventListener('click', this.handleClick, false);
 
       if (this.platform === 'APP') {
         this.$refs.canvas.addEventListener('click', this.handleClickAPP, false);
@@ -336,17 +332,13 @@ export default {
       if (headSortIcon) {
         this.columns = this.columns.map((v) => {
           if (v.key === headSortIcon.key) {
-            // if (!v.isSort) {
             if (!v.isSort || v.isSort === 2) {
               v.isSort = 1;
               headSortIcon.isSort = 1;
             } else if (v.isSort === 1) {
               v.isSort = 2;
               headSortIcon.isSort = 2;
-            } /* else if (v.isSort === 2) {
-                v.isSort = 1;
-                headSortIcon.isSort = 1;
-              } */
+            }
           } else {
             v.isSort = 0;
           }
