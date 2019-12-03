@@ -1,9 +1,15 @@
 export default {
   methods: {
+    toNonExponential (num) {
+      if (typeof num !== 'number') return num;
+      var m = num.toExponential().match(/\d(?:\.(\d*))?e([+-]\d+)/);
+      return num.toFixed(Math.max(0, (m[1] || '').length - m[2]));
+    },
     getTextLine (ctx, text, width, {isX, pres}, isInDim = false) {
       if (pres && !isInDim) {
         if (text !== '- -') {
           text = this.addingUnit(text, pres.state.unit);
+          text = this.toNonExponential(text);
           text = this.fmoney(text, pres.state.dec, pres.state.commas);
           text = text + pres.state.unit;
         }
@@ -34,7 +40,7 @@ export default {
       } else if (unit === '%') {
         nVal = val * 100;
       }
-      return nVal;
+      return parseFloat(Number(nVal).toPrecision(12)); // nVal;
     },
     round (v, e) {
       var t = 1;

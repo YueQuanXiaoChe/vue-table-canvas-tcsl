@@ -1,5 +1,3 @@
-import {throttle} from './tools';
-
 export default {
   data () {
     return {
@@ -23,6 +21,43 @@ export default {
     }
   },
   methods: {
+    throttle (delay, noTrailing, callback, debounceMode) {
+      var timeoutID;
+      var lastExec = 0;
+      if (typeof noTrailing !== 'boolean') {
+        debounceMode = callback;
+        callback = noTrailing;
+        noTrailing = undefined;
+      }
+      function wrapper () {
+        var self = this;
+        var elapsed = Number(new Date()) - lastExec;
+        var args = arguments;
+        function exec () {
+          lastExec = Number(new Date());
+          callback.apply(self, args);
+        }
+        function clear () {
+          timeoutID = undefined;
+        }
+    
+        if (debounceMode && !timeoutID) {
+          exec();
+        }
+    
+        if (timeoutID) {
+          clearTimeout(timeoutID);
+        }
+    
+        if (debounceMode === undefined && elapsed > delay) {
+          exec();
+        } else if (noTrailing !== true) {
+          timeoutID = setTimeout(debounceMode ? clear : exec, debounceMode === undefined ? delay - elapsed : delay);
+        }
+      }
+    
+      return wrapper;
+    },
     preventEvent (event) {
       if (!this.refresh) {
         event.preventDefault();
@@ -32,7 +67,7 @@ export default {
     removeEvent () {
       if (this.platform === 'APP') {
         window.removeEventListener('touchstart', this.handleMousedown, false);
-        window.removeEventListener('touchmove', throttle(16, this.handleMousemoveAPP), false);
+        window.removeEventListener('touchmove', this.throttle(16, this.handleMousemoveAPP), false);
         window.removeEventListener('touchend', this.handleMouseup, false);
       } else if (this.platform === 'PC') {
         window.removeEventListener('mouseup', this.handleMouseup, false);
@@ -45,18 +80,18 @@ export default {
       if (this.platform === 'APP') {
         this.$refs.canvas.addEventListener('click', this.handleClickAPP, false);
         this.$refs.reference.addEventListener('touchstart', this.handleMousedown, false);
-        this.$refs.reference.addEventListener('touchmove', throttle(16, this.handleMousemoveAPP), false);
+        this.$refs.reference.addEventListener('touchmove', this.throttle(16, this.handleMousemoveAPP), false);
         window.addEventListener('touchend', this.handleMouseup, false);
         this.$refs.canvas.addEventListener('dblclick', this.doubleHandleClick, false);
-        this.$refs.canvas.addEventListener('touchmove', throttle(16, this.handleTouchmove), false);
+        this.$refs.canvas.addEventListener('touchmove', this.throttle(16, this.handleTouchmove), false);
         this.$refs.canvas.addEventListener('touchstart', this.handleMousedown, false);
       } else if (this.platform === 'PC') {
         this.$refs.canvas.addEventListener('click', this.handleClickPC, false);
         this.$refs.reference.addEventListener('mousedown', this.handleMousedown, false);
-        this.$refs.reference.addEventListener('mousemove', throttle(16, this.handleMousemovePC), true);
+        this.$refs.reference.addEventListener('mousemove', this.throttle(16, this.handleMousemovePC), true);
         window.addEventListener('mouseup', this.handleMouseup, false);
-        this.$refs.canvas.addEventListener('mousemove', throttle(16, this.handleMouseOver), false);
-        this.$refs.canvas.addEventListener(this.isFirefox ? 'DOMMouseScroll' : 'mousewheel', throttle(16, this.handleWheel));
+        this.$refs.canvas.addEventListener('mousemove', this.throttle(16, this.handleMouseOver), false);
+        this.$refs.canvas.addEventListener(this.isFirefox ? 'DOMMouseScroll' : 'mousewheel', this.throttle(16, this.handleWheel));
         this.$refs.canvas.addEventListener('contextmenu', this.handleContextmenu, false);
       }
     },

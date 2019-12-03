@@ -181,7 +181,9 @@ export default {
                       break;
                     }
                   }
-                  if (index >= (columns.length - this.indexCondition.length)) isInIndex = false;
+                  // if (index >= (columns.length - this.indexCondition.length)) isInIndex = false;
+                  if (index > this.compareCondition.length) isInIndex = false;
+                  else isInIndex = true;
                   textLine = getTextLine(ctx, text, column.width, obj, isInIndex);
                 }
               }
@@ -330,7 +332,9 @@ export default {
                       break;
                     }
                   }
-                  if (index >= (columns.length - this.indexCondition.length)) isInIndex = false;
+                  // if (index >= (columns.length - this.indexCondition.length)) isInIndex = false;
+                  if (index > this.compareCondition.length) isInIndex = false;
+                  else isInIndex = true;
                   textLine = getTextLine(ctx, text, column.width, obj, isInIndex);
                 }
               }
