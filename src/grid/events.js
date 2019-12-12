@@ -91,7 +91,7 @@ export default {
         this.$refs.reference.addEventListener('mousemove', this.throttle(16, this.handleMousemovePC), true);
         window.addEventListener('mouseup', this.handleMouseup, false);
         this.$refs.canvas.addEventListener('mousemove', this.throttle(16, this.handleMouseOver), false);
-        this.$refs.canvas.addEventListener(this.isFirefox ? 'DOMMouseScroll' : 'mousewheel', this.throttle(16, this.handleWheel));
+        // this.$refs.canvas.addEventListener(this.isFirefox ? 'DOMMouseScroll' : 'mousewheel', this.throttle(16, this.handleWheel));
         this.$refs.canvas.addEventListener('contextmenu', this.handleContextmenu, false);
       }
     },
